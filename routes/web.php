@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Auth::routes();
+
 Route::group(['middleware' => ['auth', 'is_admin'], 'prefix' => 'admin', 'as' => 'admin.'], function() {
     // admin
     Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
@@ -24,6 +26,10 @@ Route::group(['middleware' => ['auth', 'is_admin'], 'prefix' => 'admin', 'as' =>
     Route::resource('attributes', \App\Http\Controllers\Admin\AttributeController::class);
     Route::resource('attributes.attribute_options', \App\Http\Controllers\Admin\AttributeOptionController::class);
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+    Route::resource('products.product_images', \App\Http\Controllers\Admin\ProductImageController::class);
 });
 
-Auth::routes();
+Route::get('/', function() {
+    return view('frontend.homepage');
+});
+
