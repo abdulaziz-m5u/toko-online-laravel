@@ -27,4 +27,16 @@ class ResetPasswordController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
+
+    public function showResetForm(Request $request, $token = null)
+	{
+		if (is_null($token)) {
+			return $this->getEmail();
+		}
+
+		$this->data['email'] = $request->input('email');
+		$this->data['token'] = $token;
+		
+		return view('frontend.auth.password.reset', $this->data);
+	}
 }

@@ -80,4 +80,49 @@ class Product extends Model
 	{
 		return $this->hasMany(ProductImage::class)->orderBy('id', 'DESC');
 	}
+
+	public function scopeActive($query)
+	{
+		return $query->where('status', 1)
+			->where('parent_id', null);
+	}
+
+	public function scopePopular($query, $limit = 10)
+	{
+		$month = now()->format('m');
+
+		return $query->selectRaw('products.*, COUNT(order_items.id) as total_sold')
+			->join('order_items', 'order_items.product_id', '=', 'products.id')
+			->join('orders', 'order_items.order_id', '=', 'orders.id')
+			->whereRaw(
+				'orders.status = :order_satus AND MONTH(orders.order_date) = :month',
+				[
+					'order_status' => Order::COMPLETED,
+					'month' => $month
+				]
+			)
+			->groupBy('products.id')
+			->orderByRaw('total_sold DESC')
+			->limit($limit);
+	}
+
+	public function priceLabel()
+	{
+		return ($this->variants->count() > 0) ? $this->variants->first()->price : $this->price;
+	}
+
+	public function configurable()
+	{
+		return $this->type == 'configurable';
+	}
+
+	public function parent()
+	{
+		return $this->belongsTo(Product::class, 'parent_id');
+	}
+
+	public function productAttributeValues()
+	{
+		return $this->hasMany(ProductAttributeValue::class, 'parent_product_id');
+	}
 }

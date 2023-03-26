@@ -32,6 +32,7 @@
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <!-- header -->
+
         <header>
             <div class="header-top-furniture wrapper-padding-2 res-header-sm">
                 <div class="container-fluid">
@@ -121,7 +122,46 @@
                                 </ul>
                             </nav>
                         </div>
-                        <h3>Mini Cart</h3>
+                        <div class="header-cart">
+                            <a class="icon-cart-furniture" href="{{ url('carts') }}">
+                                <i class="ti-shopping-cart"></i>
+                                <span class="shop-count-furniture green">{{ Cart::count() }}</span>
+                            </a>
+                            <!-- @if (Cart::count() > 0)
+                                <ul class="cart-dropdown">
+                                    @foreach (Cart::content() as $item)
+                                        @php
+                                            $product = isset($item->model->parent) ? $item->model->parent : $item->model;
+                                            $image = !empty($product->productImages->first()) ? asset('storage/'.$product->productImages->first()->path) : asset('themes/ezone/assets/img/cart/3.jpg')
+                                        @endphp
+                                        <li class="single-product-cart">
+                                            <div class="cart-img">
+                                                <a href="{{ url('product/'. $product->slug) }}"><img src="{{ $image }}" alt="{{ $product->name }}" style="width:100px"></a>
+                                            </div>
+                                            <div class="cart-title">
+                                                <h5><a href="{{ url('product/'. $product->slug) }}">{{ $item->name }}</a></h5>
+                                                <span>{{ number_format($item->price) }} x {{ $item->quantity }}</span>
+                                            </div>
+                                            <div class="cart-delete">
+                                                <a href="{{ url('carts/remove/'. $item->id)}}" class="delete"><i class="ti-trash"></i></a>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                    <li class="cart-space">
+                                        <div class="cart-sub">
+                                            <h4>Subtotal</h4>
+                                        </div>
+                                        <div class="cart-price">
+                                            <h4>{{ Cart::subtotal() }}</h4>
+                                        </div>
+                                    </li>
+                                    <li class="cart-btn-wrapper">
+                                        <a class="cart-btn btn-hover" href="{{ url('carts') }}">view cart</a>
+                                        <a class="cart-btn btn-hover" href="{{ url('orders/checkout') }}">checkout</a>
+                                    </li>
+                                </ul>
+                            @endif -->
+                        </div>
                     </div>
                     <div class="row">
                         <div class="mobile-menu-area d-md-block col-md-12 col-lg-12 col-12 d-lg-none d-xl-none">
@@ -215,16 +255,16 @@
                             </ul>
                         </div>
                         <div class="furniture-search">
-                            <form action="{{ url('products') }}" method="GET">
-                                <input placeholder="I am Searching for . . ." type="text" name="q" value="{{ isset($q) ? $q : null }}">
-                                <button>
-                                    <i class="ti-search"></i>
-                                </button>
-                            </form>
+                        <form action="{{ url('products') }}" method="GET">
+                            <input placeholder="I am Searching for . . ." type="text" name="q" value="{{ isset($q) ? $q : null }}">
+                            <button>
+                                <i class="ti-search"></i>
+                            </button>
+                        </form>
                         </div>
                         <div class="furniture-wishlist">
                             <ul>
-                                <li><a href="{{ url('favorites') }}"><i class="ti-heart"></i> Favorites</a></li>
+                                <li><a href="{{ url('wishlists') }}"><i class="ti-heart"></i> Favorites</a></li>
                             </ul>
                         </div>
                     </div>
@@ -318,7 +358,7 @@
                                 <div id="mc_embed_signup" class="subscribe-form-5">
                                     <form action="http://devitems.us11.list-manage.com/subscribe/post?u=6bbb9b6f5827bd842d9640c82&amp;id=05d85f18ef" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
                                         <div id="mc_embed_signup_scroll" class="mc-form">
-                                            <input type="email" value="" name="EMAIL" class="email" placeholder="Enter mail address" required>
+                                            <input type="email" value="" name="EMAIL" class="email" placeholder="Enter mail address">
                                             <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
                                             <div class="mc-news" aria-hidden="true"><input type="text" name="b_6bbb9b6f5827bd842d9640c82_05d85f18ef" tabindex="-1" value=""></div>
                                             <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
@@ -343,6 +383,11 @@
             </div>
         </footer>
         <!-- end -->
+        <div id="loader" style="display: none;">
+            <div id="loading" style="z-index:99999;position: fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,.3);display: flex;justify-content:center;align-items: center;" class="mx-auto">
+                <p><img src="{{ asset('themes/ezone/assets/img/loading.gif') }}" /> Please Wait</p>
+            </div>
+        </div>
 
         <!-- modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -488,6 +533,7 @@
             </div>
         </div>
         <!-- end -->
+
 		
 		<!-- all js here -->
         <script src="{{ asset('themes/ezone/assets/js/vendor/jquery-1.12.0.min.js') }}"></script>
@@ -503,10 +549,12 @@
         <script src="{{ asset('themes/ezone/assets/js/plugins.js') }}"></script>
         <script src="{{ asset('themes/ezone/assets/js/main.js') }}"></script>
         <script src="{{ asset('themes/ezone/assets/js/app.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             $(".delete").on("click", function () {
                 return confirm("Do you want to remove this?");
             });
         </script>
+        @stack('script-alt')
     </body>
 </html>

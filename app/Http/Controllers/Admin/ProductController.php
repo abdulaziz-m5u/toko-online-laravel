@@ -10,6 +10,7 @@ use App\Models\AttributeOption;
 use App\Models\ProductInventory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use App\Models\ProductAttributeValue;
 use App\Http\Requests\Admin\ProductRequest;
 
@@ -212,6 +213,9 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        foreach($product->productImages as $productImage) {
+            File::delete('storage/' . $productImage->path);
+        }
         $product->delete();
 
         return redirect()->back()->with([

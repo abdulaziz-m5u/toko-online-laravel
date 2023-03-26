@@ -35,7 +35,7 @@
                                 <td>{{ $product->sku }}</td>
                                 <td>{{ $product->type }}</td>
                                 <td>{{ $product->name }}</td>
-                                <td>{{ $product->price }}</td>
+                                <td>{{ number_format($product->price) }}</td>
                                 <td>{{ $product->statusLabel() }}</td>
                                 <td>
                                 <div class="btn-group btn-group-sm">
@@ -56,6 +56,7 @@
                                 <td colspan="7" class="text-center">Data Kosong !</td>
                             </tr>
                         @endforelse
+                        </tbody>
                     </table>
                 </div>
               </div>
